@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 # Parameters
 width, height = 2400, 1080
-duration = 30  # seconds
+duration = 40  # seconds
 fps = 90
 total_frames = duration * fps
 
@@ -35,15 +35,28 @@ out = cv2.VideoWriter(f'grating_tf{temporal_freq}_sf{spatial_freq}.mp4', fourcc,
 # Main loop
 for i in tqdm(range(total_frames), desc="Writing frames"):
     if i < 10 * fps:
+        # 0–10 s: static
         out.write(static_bgr)
+
     elif i < 20 * fps:
-        phase = (i - 10 * fps) * temporal_freq * 2 * np.pi
+        # 10–20 s: drift left (negative phase)
+        phase = -(i - 10 * fps) * temporal_freq * 2 * np.pi
         grating = 0.5 + 0.5 * np.sin(spatial_term + phase)
         frame = (grating * 255).astype(np.uint8)
         frame_bgr = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
         out.write(frame_bgr)
-    else:
+
+    elif i < 30 * fps:
+        # 20–30 s: static
         out.write(static_bgr)
+
+    else:
+        # 30–40 s: drift right (positive phase)
+        phase = (i - 30 * fps) * temporal_freq * 2 * np.pi
+        grating = 0.5 + 0.5 * np.sin(spatial_term + phase)
+        frame = (grating * 255).astype(np.uint8)
+        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+        out.write(frame_bgr)
 
 out.release()
 print("Done.")
