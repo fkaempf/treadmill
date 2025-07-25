@@ -14,7 +14,7 @@ arc_deg         = 75       # total sweep (°)
 vel_deg_s       = 75       # angular speed (° per second)
 
 # ---- SET UP MONITOR FOR DEG↔PIX CONVERSION ----
-mon = monitors.Monitor('myMonitor', width=7.32, distance=1)  
+mon = monitors.Monitor('myMonitor', width=7.32, distance=2)  
 # (replace width & distance with your monitor’s physical width (cm) & viewing distance (cm))
 mon.setSizePix(win_size)
 
@@ -53,7 +53,7 @@ win.recordFrameIntervals = True
 
 # ---- STATIC PHASE BEFORE MOTION ----
 for _ in range(int(static_dur * fps)):
-    dot.pos    = (0, 0)
+    dot.pos    = (0, -100)
     dot.radius = dot_radius_px
     pos_text.text = "x = 0.00"
     dot.draw()#; pos_text.draw()
@@ -86,13 +86,13 @@ for _ in range(n_motion):
     print(f"x = {x:.2f} px ({pix2deg(x, mon):.2f}°), radius = {dot.radius:.2f}px")
     pos_text.text = f"x = {pix2deg(x,mon):.1f}°"
 
-    dot.pos = (x, 0)
+    dot.pos = (x, -100)
     dot.draw()#; pos_text.draw()
     win.flip(); win.getMovieFrame()
 
 # ---- STATIC PHASE AFTER MOTION ----
 for _ in range(int(post_static_dur * fps)):
-    dot.pos    = (0, 0)
+    dot.pos    = (0, -100)
     dot.radius = dot_radius_px
     pos_text.text = "x = 0.00"
     dot.draw()#; pos_text.draw()
